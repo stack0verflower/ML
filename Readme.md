@@ -8,16 +8,24 @@ Here is a snapshot of the current performance scaling for inversions and determi
 
 ![Benchmark Results](imgs/benchmark_mat.png)
 
-## What's Built So Far
+## Implemented Components
 
-With the core math engine in place, the rest of the data and evaluation pipeline is now ready:
+### 1. Linear Algebra Core (`utils/matrix.hpp`, `utils/matrix.cpp`)
+* **Cache-Blocked Matrix Multiplication (`operator*`, `operator*=`)**: L1-tiled $i$-$k$-$j$ GEMM kernel with `RESTRICT` pointer aliasing hints and vectorization pragmas (`PRAGMA_IVDEP`).
+* **Matrix Decompositions & Ops**: LU-based matrix inversion (`Inverse`), cache-friendly transpose, row/column reductions (`mean`), and row-wise broadcasting (`add_broadcast`).
 
-* **Matrix Engine (`utils`):** Handles the core linear algebra—cache-tiled multiplication, transpose, Hadamard products, broadcasting, axis reductions (`sum`, `mean`, `min`, `max`), inversion, determinants, and random initialization.
-* **CSV Loader:** Reads raw datasets from disk directly into matrices and splits them into features (`X`) and targets (`y`).
-* **Preprocessing (`preprocess`):** Includes a reproducible `train_test_split` (shuffling lightweight row indices instead of swapping matrix memory) along with `StandardScaler` and `MinMaxScaler` using the `fit`/`transform` pattern to prevent data leakage.
-* **Evaluation Metrics (`metrics`):** Basic scoring functions to evaluate model performance, starting with Mean Squared Error (MSE) and Classification Accuracy.
+### 2. Data Pipeline & Preprocessing (`utils/loader.hpp`, `utils/preprocessor.hpp`)
+* **CSV Ingestion & Splitting**: Loads numeric CSV datasets directly into `utils::Matrix` and splits feature/target matrices (`split_xy`, `train_test_split`).
+* **Standardization**: Z-score feature scaling (`StandardScaler`).
 
-Next up is building out the first set of classical ML models on top of this pipeline.
+### 3. Model Interfaces & Classical Models (`models/base.hpp`, `models/linear_regression.hpp`)
+* **Compile-Time Concepts (`models/base.hpp`)**: Enforces uniform `fit` and `const`-correct `predict` interfaces via C++20 `SupervisedModel` and `UnsupervisedModel` concepts.
+* **Linear Regression (`models/linear_regression.hpp`)**:
+  * **Implemented**: Closed-form Ordinary Least Squares (OLS) solver via mean-centered Normal Equations:
+
+$$W = (X_c^T X_c)^{-1} X_c^T y_c, \quad b = \bar{y} - \bar{X} W$$
+
+  * **Planned / In Progress**: Batch & Mini-Batch Gradient Descent solvers, learning rate scheduling, and $L_2$ (Ridge) regularization.
 
 ## Building and Running
 
