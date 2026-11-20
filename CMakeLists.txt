@@ -35,9 +35,15 @@ target_include_directories(ml_project_app PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/utils
 )
 
+target_include_directories(ml_project_app PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/models
+)
+
 target_link_libraries(ml_project_app PRIVATE
     benchmark::benchmark
 )
+
+target_compile_definitions(ml_project_app PRIVATE PROJECT_ROOT_DIR="${CMAKE_SOURCE_DIR}")
 
 if(MSVC)
     target_compile_options(ml_project_app PRIVATE /W3)
