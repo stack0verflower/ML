@@ -85,13 +85,13 @@ namespace utils {
 		const size_t K = t_c;
 		const size_t N = other.t_c;
 
-		for (size_t io = 0; io < t_r; io++) {
+		for (size_t io = 0; io < t_r; io += b_size) {
 			const size_t i_e = std::min(io + b_size, t_r);
 
-			for (size_t ko = 0; ko < t_c; ko++) {
+			for (size_t ko = 0; ko < t_c; ko += b_size) {
 				const size_t k_e = std::min(ko + b_size, t_c);
 
-				for (size_t jo = 0; jo < other.t_c; jo++) {
+				for (size_t jo = 0; jo < other.t_c; jo += b_size) {
 					const size_t j_e = std::min(jo + b_size, other.t_c);
 
 					for (size_t i = io; i < i_e; i++) {

@@ -12,7 +12,8 @@ namespace utils {
 	public:
 		std::vector<double> data;
 		size_t t_r, t_c, t_e;
-
+	
+		Matrix() noexcept : t_r(0), t_c(0) {}
 		Matrix(size_t r, size_t c) : t_r(r), t_c(c), t_e(r * c), data(r * c, 0.0) {};
 		Matrix(size_t r, size_t c, double i_v) : t_r(r), t_c(c), t_e(r* c), data(r* c, i_v) {};
 
