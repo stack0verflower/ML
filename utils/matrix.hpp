@@ -3,7 +3,7 @@
 #include <vector>
 #include <cstddef>
 
-namespace utlis {
+namespace utils {
 	class Matrix;
 	Matrix Uniform(size_t r, size_t c, double min = 0.0, double max = 1.0);
 	Matrix Normal(size_t r, size_t c, double mean = 0.0, double stddev = 1.0);
@@ -13,7 +13,6 @@ namespace utlis {
 		std::vector<double> data;
 		size_t t_r, t_c, t_e;
 
-	public:
 		Matrix(size_t r, size_t c) : t_r(r), t_c(c), t_e(r * c), data(r * c, 0.0) {};
 		Matrix(size_t r, size_t c, double i_v) : t_r(r), t_c(c), t_e(r* c), data(r* c, i_v) {};
 

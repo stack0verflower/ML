@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <random>
 
-namespace utlis {
+namespace utils {
 	Matrix Matrix::operator+(const Matrix& other) const {
 		if (UNLIKELY(t_r != other.t_r || t_c != other.t_c))
 			throw std::invalid_argument("Matrix dimensions must match for addition.");

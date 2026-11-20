@@ -1,6 +1,7 @@
 #pragma once
+#include <cassert>
 
-// Loop tilling constant
+// Loop tiling constant
 #ifndef L1_CACHE_BLOCK_SIZE
 // 32 doubles = 256 bytes per row segment. 
 // A 32x32 block of doubles is 8 KB, safely fitting inside modern 32-48 KB L1D caches.
@@ -19,8 +20,6 @@
 #endif
 
 // Compiler-agnostic restrict pointer qualifier
-// Restrict pointers allow the compiler to optimize memory access by assuming that the pointer is the only reference to that memory location, enabling better vectorization and optimization.
-// It ensures no overlaps in memory access, which can lead to more efficient code generation.
 #if defined(_MSC_VER)
 #define RESTRICT __restrict
 #elif defined(__GNUC__) || defined(__clang__)
@@ -29,8 +28,19 @@
 #define RESTRICT
 #endif
 
-// Branch prediction hints (C++20 provides [[likely]] / [[unlikely]], 
-// but manual macros remain useful for older targets or expressions)
+// Force inline for hot-path math helpers (activations, loss derivatives)
+#if defined(_MSC_VER)
+#define FORCE_INLINE __forceinline
+#elif defined(__GNUC__) || defined(__clang__)
+#define FORCE_INLINE __attribute__((always_inline)) inline
+#else
+#define FORCE_INLINE inline
+#endif
+
+// Zero-cost debug-only invariant checks (erased completely in Release / NDEBUG)
+#define ML_ASSERT(cond, msg) assert((cond) && (msg))
+
+// Branch prediction hints (function-like expression macros)
 #if defined(__GNUC__) || defined(__clang__)
 #define LIKELY(x)   __builtin_expect(!!(x), 1)
 #define UNLIKELY(x) __builtin_expect(!!(x), 0)
