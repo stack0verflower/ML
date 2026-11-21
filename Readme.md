@@ -3,6 +3,7 @@
 Building a machine learning library from scratch in C++. Right now, the focus is on getting the foundational math and data pipeline right before moving on to building actual models on top of it. 
 
 I've put together a custom matrix engine to handle core linear algebra operations like matrix inversion and determinants. It's written in C++20, manages memory safely with the Rule of Five, and uses Google Benchmark to keep track of how the algorithms scale as the matrices get larger.
+Also conjured up a pipeline to write the first models.
 
 Here is a snapshot of the current performance scaling for inversions and determinants:
 
@@ -19,13 +20,15 @@ Here is a snapshot of the current performance scaling for inversions and determi
 * **Standardization**: Z-score feature scaling (`StandardScaler`).
 
 ### 3. Model Interfaces & Classical Models (`models/base.hpp`, `models/linear_regression.hpp`)
-* **Compile-Time Concepts (`models/base.hpp`)**: Enforces uniform `fit` and `const`-correct `predict` interfaces via C++20 `SupervisedModel` and `UnsupervisedModel` concepts.
-* **Linear Regression (`models/linear_regression.hpp`)**:
-  * **Implemented**: Closed-form Ordinary Least Squares (OLS) solver via mean-centered Normal Equations:
+- **Compile-Time Concepts (`models/base.hpp`)**: Enforces uniform `fit` and `const`-correct `predict` interfaces via C++20 `SupervisedModel` and `UnsupervisedModel` concepts.
+- **Linear Regression (`models/linear_regression.hpp`)**:
+  - **Implemented**:
+    - Closed-form Ordinary Least Squares (OLS) solver via mean-centered Normal Equations:
 
 $$W = (X_c^T X_c)^{-1} X_c^T y_c, \quad b = \bar{y} - \bar{X} W$$
 
-  * **Planned / In Progress**: Batch & Mini-Batch Gradient Descent solvers, learning rate scheduling, and $L_2$ (Ridge) regularization.
+   - Iterative Batch Gradient Descent solver (`Solver::GradientDescent`) with configurable learning rate, iteration cap, and gradient-norm early stopping.
+  - **Planned / In Progress**: Mini-Batch Gradient Descent, learning rate scheduling, and $L_1$/$L_2$ (Lasso/Ridge) regularization.
 
 ## Building and Running
 
