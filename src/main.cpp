@@ -19,12 +19,12 @@ int main() {
     std::filesystem::path csv_path = std::filesystem::path(PROJECT_ROOT_DIR) / "data.csv";
     auto [X, y] = utils::split_xy(utils::load_csv(csv_path.string()));
 
-    models::LinearRegression lr;
-    lr.fit(X, y);
+    models::LinearRegression gd(models::Solver::GradientDescent, 0.01, 5000, 1e-7);
+    gd.fit(X, y);
 
-    print_mat("Weights", lr.weights());   // Expect: 2.5, -1.2, 0.8
-    print_mat("Bias", lr.bias());         // Expect: 4.0
+    print_mat("Weights", gd.weights());   // Expect: 2.5, -1.2, 0.8
+    print_mat("Bias", gd.bias());         // Expect: 4.0
 
-    utils::Matrix preds = lr.predict(X);
+    utils::Matrix preds = gd.predict(X);
     print_mat("Predictions", preds);      // Should match y column
 }
